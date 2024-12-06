@@ -44,8 +44,8 @@ procedure day05 with SPARK_Mode is
       First_Idx : Natural;
       Second_Idx : Natural;
    begin
-      First_Idx := day05.Index_Of (Pages, Rule.First);
-      Second_Idx := day05.Index_Of (Pages, Rule.Second);
+      First_Idx := Index_Of (Pages, Rule.First);
+      Second_Idx := Index_Of (Pages, Rule.Second);
       --  if rule applies to pages not in the update, trivially passes
       if First_Idx = 0 or else Second_Idx = 0 then
          return True;
@@ -59,9 +59,9 @@ procedure day05 with SPARK_Mode is
 
    function Satisfies_Ruleset (X : Natural) return Boolean is
    begin
-      for I in 1 .. day05.Rule_Len loop
-         if not day05.Rule_Passed (day05.Rule_Set (I),
-               day05.Page_Update (X) (1 .. day05.Update_Len (X)))
+      for I in 1 .. Rule_Len loop
+         if not Rule_Passed (Rule_Set (I),
+               Page_Update (X) (1 .. Update_Len (X)))
          then
             return False;
          end if;
@@ -73,7 +73,7 @@ procedure day05 with SPARK_Mode is
       Mid_Idx : Natural;
    begin
       --  recall: one-based index, so half of length + 1 is mid point
-      Mid_Idx := day05.Update_Len (X) / 2 + 1;
+      Mid_Idx := Update_Len (X) / 2 + 1;
       return Page_Update (X) (Mid_Idx);
    end Get_Mid_Page;
 
@@ -81,24 +81,24 @@ procedure day05 with SPARK_Mode is
    --  similar to bubble sort
    procedure Fix_Order (X : Natural) is
       Rule : Integer_Pair;
-      Pages : Integer_Array (1 .. day05.Update_Len (X));
+      Pages : Integer_Array (1 .. Update_Len (X));
       First_Idx : Natural;
       Second_Idx : Natural;
       A : Integer;
       B : Integer;
    begin
-      while not day05.Satisfies_Ruleset (X) loop
-         for I in 1 .. day05.Rule_Len loop
-            Rule := day05.Rule_Set (I);
-            Pages := day05.Page_Update (X) (1 .. day05.Update_Len (X));
-            if not day05.Rule_Passed (Rule, Pages) then
-               First_Idx := day05.Index_Of (Pages, Rule.First);
-               Second_Idx := day05.Index_Of (Pages, Rule.Second);
+      while not Satisfies_Ruleset (X) loop
+         for I in 1 .. Rule_Len loop
+            Rule := Rule_Set (I);
+            Pages := Page_Update (X) (1 .. Update_Len (X));
+            if not Rule_Passed (Rule, Pages) then
+               First_Idx := Index_Of (Pages, Rule.First);
+               Second_Idx := Index_Of (Pages, Rule.Second);
                --  swap page order
                A := Pages (First_Idx);
                B := Pages (Second_Idx);
-               day05.Page_Update (X) (First_Idx) := B;
-               day05.Page_Update (X) (Second_Idx) := A;
+               Page_Update (X) (First_Idx) := B;
+               Page_Update (X) (Second_Idx) := A;
                exit;
             end if;
          end loop;
